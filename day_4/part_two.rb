@@ -7,13 +7,29 @@ class PartOne
 
   def run
     @cards = read_input
-    sum = 0
-    @copies = {}
     @cards.each do |key, value|
-      sum += get_card_value(key, value)
+      for i in 1..value[:copies]
+        get_card_value(key, value)
+      end
     end
-    calculate_from_copies
+    sum = 0
+    @cards.each do |key, value|
+      sum += value[:copies]
+    end
     puts sum
+  end
+
+  def get_card_value(key, card)
+    matches = card[:winners] & card[:my_numbers]
+    return 0 if matches.length == 0
+    calculate_copies(key, matches.length)
+  end
+
+  def calculate_copies(key, num_matches)
+    for i in 1..num_matches
+      index = (key.to_i + i).to_s
+      @cards[index][:copies] += 1
+    end
   end
 
   def read_input
@@ -27,37 +43,12 @@ class PartOne
 
       cards[key] = {
         winners: winners,
-        my_numbers: my_numbers
+        my_numbers: my_numbers,
+        copies: 1
       }
     end
     return cards
   end
-
-  def get_card_value(key, card)
-    matches = card[:winners] & card[:my_numbers]
-    return 0 if matches.length == 0
-    score = 1
-    calculate_copies(key, matches.length)
-    return score if matches.length == 1
-    for i in 0..matches.length - 2
-      score *= 2
-    end
-    return score
-  end
-
-  def calculate_copies(key, num_matches)
-    for i in 1..num_matches
-      index = key.to_i + i
-      @copies[index.to_s] = @copies[index.to_s].nil? ? 1 : @copies[index.to_s] + 1
-    end
-  end
-
-  def calculate_from_copies
-    @copies.each do |key, value|
-      get_card_value(key, @cards[key])
-    end
-  end
-
 end
 
 PartOne.run
