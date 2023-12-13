@@ -10,15 +10,19 @@ class PartOne
     find_total_arrangements
   end
 
-
   def find_total_arrangements
     counter = 0
     @input_data.each do |input|
+      @cache = {}
       counter += dp(input[:springs], input[:positions], 0, 0, 0)
     end
     puts counter
   end
   def dp(dots, blocks, dots_index, blocks_index, current_block)
+    key = [dots_index, blocks_index, current_block]
+    if @cache[key]
+      return @cache[key]
+    end
     if dots_index == dots.length
       if blocks_index == blocks.length && current_block == 0
         return 1
@@ -41,6 +45,7 @@ class PartOne
         end
       end
     end
+    @cache[key] = result
     return result
   end
   def parse_input
@@ -48,8 +53,9 @@ class PartOne
     @input_data = []
     for line in file
       line_parts = line.split(' ')
-      springs = line_parts[0].split('')
-      positions = line_parts[1].split(',').map(&:to_i)
+      springs = [line_parts[0], line_parts[0], line_parts[0], line_parts[0], line_parts[0]].join('?').split('')
+      positions = line_parts[1].split(',') * 5
+      positions = positions.map(&:to_i)
       @input_data << {
         springs: springs,
         positions: positions
