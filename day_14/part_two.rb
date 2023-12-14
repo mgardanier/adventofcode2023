@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'digest'
 
 class PartTwo
   def self.run
@@ -12,17 +13,23 @@ class PartTwo
   end
 
   def slide_rocks
-    # @cache = {}
-    # for i in 0..1000000000
-    for i in 0..2
+    @cache = {}
+    for i in 0..1000000000
+    # for i in 0..2
       @changed = false
       slide_rocks_north
       slide_rocks_west
       slide_rocks_south
       slide_rocks_east
-    puts i
-      print_platform
+      puts i
+      # print_platform
     end
+  end
+
+  def get_hash_key(direction)
+    key = Digest::MD5.hexdigest(@platform.join)
+    key = "#{direction}-#{key}"
+    return key
   end
 
   def print_platform
@@ -42,67 +49,75 @@ class PartTwo
   end
 
   def slide_rocks_west
-    @changed = false
-    # key = [@platform, 'w']
-    # if @cache[key]
-    #   @platform = @cache[key] if @cache[key]
-    #   return
-    # end
-    for row_index in 0..@platform.length - 1
-      slide_row_left(row_index)
+    key = get_hash_key('w')
+    if @cache[key]
+      @platform = @cache[key] if @cache[key]
+      return
     end
-    if @changed
-      slide_rocks_west
+    loop do
+      @changed = false
+      for row_index in 0..@platform.length - 1
+        slide_row_left(row_index)
+      end
+      unless @changed
+        @cache[key] = @platform
+        return
+      end
     end
-    # @cache[key] = @platform
   end
 
   def slide_rocks_east
-    @changed = false
-    # key = [@platform, 'e']
-    # if @cache[key]
-    #   @platform = @cache[key] if @cache[key]
-    #   return
-    # end
-    for row_index in 0..@platform.length - 1
-      slide_row_right(row_index)
+    key = get_hash_key('e')
+    if @cache[key]
+      @platform = @cache[key] if @cache[key]
+      return
     end
-    if @changed
-      slide_rocks_east
+    loop do
+      @changed = false
+      for row_index in 0..@platform.length - 1
+        slide_row_right(row_index)
+      end
+      unless @changed
+        @cache[key] = @platform
+        return
+      end
     end
-    # @cache[key] = @platform
   end
 
   def slide_rocks_south
-    @changed = false
-    # key = [@platform, 's']
-    # if @cache[key]
-    #   @platform = @cache[key] if @cache[key]
-    #   return
-    # end
-    for row_index in 0..@platform.length - 2
-      slide_row_down(row_index)
+    key = get_hash_key('s')
+    if @cache[key]
+      @platform = @cache[key] if @cache[key]
+      return
     end
-    if @changed
-      slide_rocks_south
+    loop do
+      @changed = false
+      for row_index in 0..@platform.length - 2
+        slide_row_down(row_index)
+      end
+      unless @changed
+        @cache[key] = @platform
+        return
+      end
     end
-    # @cache[key] = @platform
   end
 
   def slide_rocks_north
-    @changed = false
-    # key = [@platform, 'n']
-    # if @cache[key]
-    #   @platform = @cache[key] if @cache[key]
-    #   return
-    # end
-    for row_index in 1..@platform.length - 1
-      slide_row_up(row_index)
+    key = get_hash_key('s')
+    if @cache[key]
+      @platform = @cache[key] if @cache[key]
+      return
     end
-    if @changed
-      slide_rocks_north
+    loop do
+      @changed = false
+      for row_index in 1..@platform.length - 1
+        slide_row_up(row_index)
+      end
+      unless @changed
+        @cache[key] = @platform
+        return
+      end
     end
-    # @cache[key] = @platform
   end
 
   def slide_row_left(row_index)
