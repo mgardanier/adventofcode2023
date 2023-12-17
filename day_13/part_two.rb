@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class PartOne
+class PartTwo
   def self.run
     new.run
   end
@@ -67,7 +67,6 @@ class PartOne
         b_string = b_string[..string_length - 1]
 
         reflection_points << i if a_string == b_string
-        reflection_points << j if ((a_string | b_string) - (a_string & b_string)) == 1
       end
       i += 1
     end
@@ -83,4 +82,4 @@ class PartOne
   end
 end
 
-PartOne.run
+PartTwo.run

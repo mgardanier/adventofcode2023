@@ -8,20 +8,26 @@ class PartTwo
 
   def run
     parse_input
+    # print_platform
     slide_rocks
     weigh_platform
   end
 
   def slide_rocks
     @cache = {}
-    for i in 0..1000000000
+    for i in 0..10000000
     # for i in 0..2
-      @changed = false
+      if @cache.key?(@platform)
+        puts "Cycle at #{i}"
+        # print_platform
+        break
+      else
+        @cache[@platform] = true
+      end
       slide_rocks_north
       slide_rocks_west
       slide_rocks_south
       slide_rocks_east
-      puts i
       # print_platform
     end
   end
@@ -49,72 +55,48 @@ class PartTwo
   end
 
   def slide_rocks_west
-    key = get_hash_key('w')
-    if @cache[key]
-      @platform = @cache[key] if @cache[key]
-      return
-    end
     loop do
       @changed = false
       for row_index in 0..@platform.length - 1
         slide_row_left(row_index)
       end
       unless @changed
-        @cache[key] = @platform
         return
       end
     end
   end
 
   def slide_rocks_east
-    key = get_hash_key('e')
-    if @cache[key]
-      @platform = @cache[key] if @cache[key]
-      return
-    end
     loop do
       @changed = false
       for row_index in 0..@platform.length - 1
         slide_row_right(row_index)
       end
       unless @changed
-        @cache[key] = @platform
         return
       end
     end
   end
 
   def slide_rocks_south
-    key = get_hash_key('s')
-    if @cache[key]
-      @platform = @cache[key] if @cache[key]
-      return
-    end
     loop do
       @changed = false
       for row_index in 0..@platform.length - 2
         slide_row_down(row_index)
       end
       unless @changed
-        @cache[key] = @platform
         return
       end
     end
   end
 
   def slide_rocks_north
-    key = get_hash_key('s')
-    if @cache[key]
-      @platform = @cache[key] if @cache[key]
-      return
-    end
     loop do
       @changed = false
       for row_index in 1..@platform.length - 1
         slide_row_up(row_index)
       end
       unless @changed
-        @cache[key] = @platform
         return
       end
     end
